@@ -12,7 +12,7 @@
 #
 #                              Fonctions Libres
 #
-#    1.  facto  .................................................... ligne   40
+#    1.  facto  .................................................... ligne   42
 #    2.  coefBino  ................................................. ligne   49
 #    3.  arrangement  .............................................. ligne   53
 #    4.  isSquare  ................................................. ligne   57
@@ -24,7 +24,7 @@
 #   10.  intVersList  .............................................. ligne  118
 #   11.  generator_syracuse  ....................................... ligne  140
 #   12.  compte_apparition  ........................................ ligne  151
-#   13.  suite_Robinson  ........................................... ligne  161
+#   13.  suite_Robinson  ........................................... ligne  160
 #
 ###############################################################################
 # --coding:utf-8--
@@ -37,13 +37,13 @@ import math
 
 
 
+
+
 def facto(n):
     """renvoie la factorielle de n"""
-    if not isinstance(n,int):
-        raise ValueError("Type "+str(type(n))+" n'est pas valide. Types int attendus.")
-    facto=1
+    facto = 1
     for k in range(1,n+1):
-        facto*=k
+        facto *= k
     return facto
 
 def coefBino(k,n):
@@ -111,9 +111,9 @@ def signature(permu):
 
 def sgn(x):
     """Fonction signe"""
-    if   x == 0:  return  0
-    elif x  > 0:  return  1
-    else:         return -1
+    if   x < 0:  return -1
+    elif x > 0:  return  1
+    else:        return  0
 
 def intVersList(nbr):
     """découpe le nombre en chiffre dans une liste
@@ -156,7 +156,6 @@ def compte_apparition(nombre):
     for valeur in liste:
         occurence[valeur] += 1
     return occurence
-
 
 def suite_Robinson(n):
     """renvoie la liste des premiers termes de la suite de robinson pour U(0)=0 jusqu'à U(n)"""
