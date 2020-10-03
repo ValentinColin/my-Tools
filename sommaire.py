@@ -5,13 +5,17 @@ Puis crée un fichier de la même extension initiale que le fichier
 dans lequel on aura rajouter un sommaire.
 """
 import os
+from datetime import date
+
+today = date.today()
 
 #################  CONSTANTE À FOURNIR À CHAQUE UTILISATION  ##################
 # FILE_PATH = "/Users/valentin/Desktop/script/python/ClassMatrice.py" # localisation du fichier
 FILE_PATH = "/Users/valentin/Github/class/ClassMatrice.py"          # localisation du fichier
 TITLE     = "Matrice"               # titre d'en tête du sommaire
 CREATOR   = "Valentin COLIN"        # créateur du fichier
-VERSION   = "27 octobre 2019"       # année de production du fichier
+VERSION   = today.strftime("%d %B %Y") # jour mois année (ex: 27 september 2019)
+#VERSION   = "27 octobre 2019"       # année de production du fichier
 CODING    = "utf-8"                 # encodage du fichier
 ###############################################################################
 
