@@ -92,7 +92,7 @@ def prod(list):
 
 def permutations(liste):
     """Prend en argument une _liste (pas de tuple)
-    renvoie la _liste des permutation d'une _liste
+    renvoie la _liste des permutation de la _liste
     mais attention la taille de la _liste renvoyer
     est en !n ->factorielle "le nombre l'élément" """
     if len(liste)==2:
