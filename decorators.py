@@ -2,6 +2,34 @@
 A decorator simply does this:
 
 callable = decorator(callable)
+___________________
+
+Utiliser functools.wraps() permet de conserver des informations
+sur la fonction wrapper
+ex:
+******************
+import functools
+def my_decorator(fct):
+    @functools.wraps(fct)
+    def new_fct(*args,**kwargs):
+        print("Calling decorated function")
+        return fct(*args,**kwargs)
+
+@my_decorator
+def example():
+    "Docstring"
+    print("Called example function")
+
+>>> example()
+Calling decorated function
+Called example function
+>>> example.__name__
+'example'
+>>> example.__doc__
+'Docstring'
+*****************
+Sans l'utilisation de wraps(), le nom de la fonction d'example aurait été 'new_fct',
+et la chaine de documentation de la fonction example() originale aurait été perdue
 """
 # --coding:utf-8--
 
