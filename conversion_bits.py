@@ -10,25 +10,29 @@ e = 1     # 00000001
 f = d & e # 00000000
 """
 
-def udec2bin(d,nb=0):
+
+def udec2bin(d, nb=0):
     """dec2bin(d,nb=0): conversion nombre entier positif ou nul
-        -> chaîne binaire (si nb>0, complète à gauche par des zéros)"""
+    -> chaîne binaire (si nb>0, complète à gauche par des zéros)"""
     if d == 0:
         b = "0"
     else:
         b = ""
         while d != 0:
-            b = "01"[d&1] + b # "01"[0] donne "0" ET "01"[1] donne "1"
-            d = d>>1 # Opérateur '>>' (décalage d'un bit à droite = multiplication par 2)
+            b = "01"[d & 1] + b  # "01"[0] donne "0" ET "01"[1] donne "1"
+            d = (
+                d >> 1
+            )  # Opérateur '>>' (décalage d'un bit à droite = multiplication par 2)
     return b.zfill(nb)
 
-def dec2bin(d,nb=8):
-    """Représentation d'un nombre entier quelconque en chaine binaire 
+
+def dec2bin(d, nb=8):
+    """Représentation d'un nombre entier quelconque en chaine binaire
     (nb: nombre de bits du mot)"""
     if d == 0:
         return "0".zfill(nb)
     if d < 0:
-        d += 1<<nb
+        d += 1 << nb
     b = ""
     while d != 0:
         d, r = divmod(d, 2)

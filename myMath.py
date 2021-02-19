@@ -29,42 +29,43 @@
 ###############################################################################
 # --coding:utf-8--
 """
-from copy import copy,deepcopy
+from copy import copy, deepcopy
 from math import sqrt
 import math
-#import cmath
 
-
-
-
+# import cmath
 
 
 def facto(n):
     """renvoie la factorielle de n"""
     facto = 1
-    for k in range(1,n+1):
+    for k in range(1, n + 1):
         facto *= k
     return facto
 
-def coefBino(k,n):
-    """renvoie le coefficient binomiale: k parmi n"""
-    return facto(n)//(facto(k)*facto(n-k))
 
-def arrangement(k,n):
+def coefBino(k, n):
+    """renvoie le coefficient binomiale: k parmi n"""
+    return facto(n) // (facto(k) * facto(n - k))
+
+
+def arrangement(k, n):
     """renvoie le nombre de k arrangement parmi n """
-    return facto(n)//facto(n-k)
+    return facto(n) // facto(n - k)
+
 
 def isSquare(x):
     """renvoie un bouléen pour savoir si x est un carré """
-    bool=True
+    bool = True
     if type(x) is float:
         raise ValueError
     elif not type(x) is int:
         raise TypeError
     else:
-        if not math.ceil(sqrt(x))==math.floor(sqrt(x)):
-            bool=False
+        if not math.ceil(sqrt(x)) == math.floor(sqrt(x)):
+            bool = False
     return bool
+
 
 def facteurFermat(N):
     """calcul deux facteurs (A,B) du nombre IMPAIR N tel que N=A*B
@@ -72,17 +73,18 @@ def facteurFermat(N):
     Si N est paire lève l'exception: ValueError
 
     """
-    if N%2==0:
+    if N % 2 == 0:
         raise ValueError
     else:
-        A=math.ceil(sqrt(N))
-        Bsq=A*A-N
+        A = math.ceil(sqrt(N))
+        Bsq = A * A - N
         while not isSquare(Bsq):
-            A=A+1
-            Bsq=A*A-N
-    if not (A-sqrt(Bsq))*(A+sqrt(Bsq))==N:
+            A = A + 1
+            Bsq = A * A - N
+    if not (A - sqrt(Bsq)) * (A + sqrt(Bsq)) == N:
         raise facteurFermatERROR
-    return (A-int(sqrt(Bsq)),A+int(sqrt(Bsq)))
+    return (A - int(sqrt(Bsq)), A + int(sqrt(Bsq)))
+
 
 def prod(list):
     result = 1
@@ -90,35 +92,50 @@ def prod(list):
         result *= x
     return result
 
+
 def permutations(liste):
     """Prend en argument une _liste (pas de tuple)
     renvoie la _liste des permutation de la _liste
     mais attention la taille de la _liste renvoyer
     est en !n ->factorielle "le nombre l'élément" """
-    if len(liste)==2:
-        return [(liste[0],liste[1]),(liste[1],liste[0])]
+    if len(liste) == 2:
+        return [(liste[0], liste[1]), (liste[1], liste[0])]
     else:
-        result=[]
+        result = []
         for i in range(len(liste)):
-            b=liste[:]
+            b = liste[:]
             del b[i]
-            result+=[tuple([liste[i]])+a for a in permutations(b)]
+            result += [tuple([liste[i]]) + a for a in permutations(b)]
         return result
+
 
 def signature(permu):
     """La permutation est une liste des premiers entiers, mélanger dans un certain ordre"""
-    return int(prod([prod([(permu[j]-permu[i])/(j-i) for i in range(j+1) if j!=i]) for j in range(len(permu))]))
+    return int(
+        prod(
+            [
+                prod([(permu[j] - permu[i]) / (j - i) for i in range(j + 1) if j != i])
+                for j in range(len(permu))
+            ]
+        )
+    )
+
 
 def sgn(x):
     """Fonction signe"""
-    if   x < 0:  return -1
-    elif x > 0:  return  1
-    else:        return  0
+    if x < 0:
+        return -1
+    elif x > 0:
+        return 1
+    else:
+        return 0
+
 
 def intVersList(nbr):
     """découpe le nombre en chiffre dans une liste
     exemple: 123 deviendra [1,2,3]"""
-    return [int(list(str(nbr))[i+1]) for i in range(len(list(str(nbr)))-2)]
+    return [int(list(str(nbr))[i + 1]) for i in range(len(list(str(nbr))) - 2)]
+
 
 """
 algo: PERMUTATIONS
@@ -137,29 +154,32 @@ données: un ensemble E
 
 """
 
+
 def generator_syracuse(n):
     """type générateur
     génère la suite de syracuse de n jusqu'à atteindre 1"""
     yield n
     while n != 1:
         if n % 2 == 0:
-            n//=2
+            n //= 2
         else:
             n = 3 * n + 1
         yield n
 
+
 def compte_apparition(nombre):
     """retourne un dictionnaire qui en clé sont les carractère
-    et en valeurs le nombre de fois qu'il apparaissent """
+    et en valeurs le nombre de fois qu'il apparaissent"""
     liste = intVersList(nombre)
-    occurence = {}.fromkeys(set(liste),0)
+    occurence = {}.fromkeys(set(liste), 0)
     for valeur in liste:
         occurence[valeur] += 1
     return occurence
 
+
 def suite_Robinson(n):
     """renvoie la liste des premiers termes de la suite de robinson pour U(0)=0 jusqu'à U(n)"""
-    resultat=[0]
+    resultat = [0]
     while len(resultat) <= n:
         liste_chiffre = transfo(resultat[-1])
         dict_occu = compte_apparition(liste_chiffre)
