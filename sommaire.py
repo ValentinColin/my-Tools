@@ -1,9 +1,12 @@
+#!/usr/bin/env python3.9
+
 """
 Convertie le fichier FILE_PATH en fichier .txt pour le manipuler et
 garder une sauvgarde en cas d'accident.
 Puis crée un fichier de la même extension initiale que le fichier
 dans lequel on aura rajouter un sommaire.
 """
+
 import os
 from datetime import date
 
@@ -15,8 +18,7 @@ FILE_PATH = "/Users/valentin/Github/class/ClassMatrice.py"          # localisati
 TITLE     = "Matrice"               # titre d'en tête du sommaire
 CREATOR   = "Valentin COLIN"        # créateur du fichier
 VERSION   = today.strftime("%d %B %Y") # jour mois année (ex: 27 september 2019)
-#VERSION   = "27 octobre 2019"       # année de production du fichier
-CODING    = "utf-8"                 # encodage du fichier
+# VERSION   = "27 octobre 2019"       # année de production du fichier
 ###############################################################################
 
 # On retire l'extension .txt .py ou n'importe quoi qu'elle extension
@@ -148,7 +150,7 @@ if dict_fonctions_libre: # ..s'il y a des fonctions libres
 
 textInsert += "#\n\
 ###############################################################################\n\
-# --coding:{}--\n\"\"\"\n".format(CODING)
+\"\"\"\n"
 
 ##############################  FIN DU SOMMAIRE  ##############################
 ###############################################################################
