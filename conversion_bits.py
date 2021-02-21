@@ -1,6 +1,6 @@
-""" Le ET logique (&):
-comparaison bit à bit en utilisant le ET logique
-Exemple:
+""" Logical AND (&):
+bit-by-bit comparison using logical AND
+Example:
 a = 92    # 01011100
 b = 21    # 00010101
 c = a & b # 00010100
@@ -11,30 +11,43 @@ f = d & e # 00000000
 """
 
 
-def udec2bin(d, nb=0):
-    """dec2bin(d,nb=0): conversion nombre entier positif ou nul
-    -> chaîne binaire (si nb>0, complète à gauche par des zéros)"""
-    if d == 0:
-        b = "0"
+def udec2bin(dec_number: int, bins: int = 0) -> str:
+    """Return a binary's string representation of the interger: dec_number.
+    Complete left with zeros.
+    """
+    if dec_number == 0:
+        bin_string = "0"
     else:
-        b = ""
-        while d != 0:
-            b = "01"[d & 1] + b  # "01"[0] donne "0" ET "01"[1] donne "1"
-            d = (
-                d >> 1
-            )  # Opérateur '>>' (décalage d'un bit à droite = multiplication par 2)
-    return b.zfill(nb)
+        bin_string = ""
+        while dec_number != 0:
+            # "01"[0] gives "0" AND "01"[1] gives "1"
+            bin_string = "01"[dec_number & 1] + bin_string
+
+            # Opérator '>>' (shift to the right = division by 2)
+            dec_number = dec_number >> 1
+    return bin_string.zfill(bins)
 
 
-def dec2bin(d, nb=8):
-    """Représentation d'un nombre entier quelconque en chaine binaire
-    (nb: nombre de bits du mot)"""
-    if d == 0:
-        return "0".zfill(nb)
-    if d < 0:
-        d += 1 << nb
-    b = ""
-    while d != 0:
-        d, r = divmod(d, 2)
-        b = "01"[r] + b
-    return b.zfill(nb)
+def dec2bin(dec_number: int, bins: int = 8) -> str:
+    """Return a representation of any integer in a binary string."""
+    if dec_number == 0:
+        return "0".zfill(bins)
+    if dec_number < 0:
+        dec_number += 1 << bins
+    bin_string = ""
+    while dec_number != 0:
+        dec_number, r = divmod(dec_number, 2)
+        bin_string = "01"[r] + bin_string
+    return bin_string.zfill(bins)
+
+
+if __name__ == '__main__':
+    n = 13
+    max_bins = 8
+
+    print(f"udec2bin {n}: {udec2bin(n):>{max_bins}}")
+    print(f"dec2bin  {n}: {dec2bin(n):>{max_bins}}")
+
+    n = -13
+
+    print(f"dec2bin {n}: {dec2bin(n):>{max_bins}}")

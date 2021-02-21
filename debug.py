@@ -1,67 +1,64 @@
-"""
-Module de débuguage, et d'info console
-"""
+#!/usr/bin/env python3.9
 
-# CONSTANTES
+"""Simple debugging and info console module"""
+
+##################
+### CONSTANTES ###
+##################
 
 DEBUGING = False
-INFO = True
-
-#  FONCTIONS D'AFFICHAGE CONSOLE
+INFO     = True
 
 
-def debug(*txt):
-    """fonction de debug,
-    cet fonction est équivalente à un print"""
+#################################
+### CONSOLE DISPLAY FUNCTIONS ###
+#################################
+
+def debug(*args, **kwars):
+    """Debugging print.
+    print only if DEBUGING is set to True.
+    """
     if DEBUGING:
-        print("[DEBUG]:", *txt)
+        print("[DEBUG]:", *args, **kwars)
 
 
-def info(*txt, nom_fichier=None):
-    """Fonction donnant des information en direct sur l'état du programme,
-    cet fonction est équivalente à un print.
-    Ne pas oublier de donner le nom du fichier dans le quelle la fonction est appeler"""
-    if INFO and nom_fichier:
-        print("[INFO][" + nom_fichier + "]", *txt)
+def info(*args, **kwargs):
+    """Info print.
+    print only if INFO is set to True.
+    You can set the `filename` manually, else __name__ is used.
+    """
+    if INFO and ("filename" in kwargs):
+        print("[INFO][" + kwargs["filename"] + "]", *args, **kwargs)
     elif INFO:
-        print("[INFO]", *txt)
+        print("[INFO][" + __name__ + "]", *args, **kwargs)
 
 
-# DÉCORATEUR DE FONCTION POUR DÉBUGUER
+###############################
+### DECORATOR FOR DEBUGGING ###
+###############################
 
-
-def deco_debug(fonction):
-    """décorateur de fonction pour le débuguage"""
+def deco_debug(func):
+    """Decorator for debugging.
+    print: ~<func_name>(*args,**kwargs)
+           ~  └> <return of func_name>
+    """
 
     def new_fct(*args, **kwargs):
-        """ajout des décoration de débuguage"""
-        debug("~{}({},{})".format(fonction.__name__, args, kwargs))
-        result = fonction(*args, **kwargs)  # stock ce que fonction peut renvoyer
-        debug("~$~", result)
-        return result
-
-    return new_fct
-
-
-def print_args(fonction):
-    """décorateur de fonction pour le débuguage"""
-    # def new_fct(*args, **kwargs): # afin d'accepter les dictionnaire en arguments
-    def new_fct(*args):
-        # debug("~{}({},{})".format(fonction.__name__, args, kwargs))
-        debug("~{}({})~".format(fonction.__name__, args))
-        # result=fonction(*args, **kwargs) # stock ce que fonction peut renvoyer
-        result = fonction(*args)  # stock ce que fonction peut renvoyer
-        debug("~$~", result)
-        return result
+        debug("~ input of {}: args: {}, kwargs: {}".format(func.__name__, args, kwargs))
+        output = func(*args, **kwargs)
+        debug("~ output of {}:".format(func.__name__), output)
+        return output
 
     return new_fct
 
 
 if __name__ == "__main__":
 
-    @print_args
-    def fnt(nbr, p=0):
-        print("je suis dans la fonction fnt")
-        return nbr ** p
+    DEBUGING = True
 
-    fnt(3, 4)
+    @deco_debug
+    def my_pow(nbr, power=0):
+        print("I'm in function my_pow")
+        return nbr ** power
+
+    my_pow(nbr=3, power=4)

@@ -1,11 +1,13 @@
+#!/usr/bin/env python3.9
+
 """
 A decorator simply does this:
 
 callable = decorator(callable)
 ___________________
 
-Utiliser functools.wraps() permet de conserver des informations
-sur la fonction wrapper
+Using functools.wraps() allows you to keep information
+on the wrapper function
 ex:
 ******************
 import functools
@@ -28,92 +30,119 @@ Called example function
 >>> example.__doc__
 'Docstring'
 *****************
-Sans l'utilisation de wraps(), le nom de la fonction d'example aurait été 'new_fct',
-et la chaine de documentation de la fonction example() originale aurait été perdue
+Without the use of wraps(), the name of the example function would have been 'new_fct',
+and the documentation string of the original example() function would have been lost.
 """
-# --coding:utf-8--
 
 
-def debug(function):
-    """Function decorator for debugging, displays arguments
-    and result obtained in the terminal."""
-    def decorated_function(*args, **kwargs):
+def debug(func):
+    """Decorator for debugging.
+    Displays inputs and output in the terminal."""
+
+    def decorated(*args, **kwargs):
         if args and not kwargs:
-            print("~ {} (args = {})".format(function.__name__,args))
+            print("~ input of {}: args: {}".format(func.__name__, args))
         elif not args and kwargs:
-            print("~ {} (kwargs = {})".format(function.__name__,kwargs))
+            print("~ input of {}: kwargs: {}".format(func.__name__, kwargs))
         elif args and kwargs:
-            print("~ {} (args = {}, kwargs = {})".format(function.__name__, args, kwargs))
+            print("~ input of {}: args: {}, kwargs: {}".format(func.__name__, args, kwargs))
         else:
-            print("~ {} (NO ARGS)".format(function.__name__))
-        result = function(*args, **kwargs) # stores the result of the function
-        print("~$~ {}'s result --> ".format(function.__name__), result)
-        return result
-    return decorated_function
+            print("~ input of {}: NO_ARGS".format(func.__name__))
+        output = func(*args, **kwargs) # stores the result of the function
+        print("~ output of {}:".format(func.__name__), output)
+        return output
 
-def execution_time(function):
-    """Decorator returning the time in seconds
+    return decorated
+
+def execution_time(func):
+    """Measures the performance of the function.
+    Decorator returning the time in seconds
     it takes for a function to execute."""
     import time
-    def decorated_function(*args,**kwargs):
-        start = time.time()
-        result = function(*args,**kwargs)
-        end = time.time()
-        print("Took {} secondes.".format(end-start))
-        return result
-    return decorated_function
 
-def singleton(class):
-    """Decorator allowing to have singletons classes (single instance)."""
-    instances = {} # Dictionary of our singletons instances (if decorator used on multiple class)
+    def decorated(*args, **kwargs):
+        start = time.time()
+        output = func(*args, **kwargs)
+        end = time.time()
+        print("Took {} secondes.".format(end - start))
+        return output
+
+    return decorated
+
+def singleton(defined_class):
+    """Decorator for singleton classes (only one instance)."""
+    instances_of_classes = {} # Dictionary of our singletons instances
+
     def get_instance():
-        if class not in instances:
+        if defined_class not in instances_of_classes:
             # We create our first class object
-            instances[class] = classe_definie()
-        return instances[class]
+            instances_of_classes[defined_class] = defined_class()
+        return instances_of_classes[defined_class]
+
     return get_instance
 
-def execution_limited(limit):
+def execution_limited(limit, overrun_func = None, *overrun_args, **overrun_kwargs):
     """Limits the number of times the function can be executed."""
+
     class ExecutionLimited(Exception):
         pass
-    def decorator(function):
+
+    def decorator(func):
         fonction_executed = {}
-        def decorated_function(*args,**kwargs):
-            if function in fonction_executed:
-                fonction_executed[function] += 1
-                if fonction_executed[function] > limit:
-                    raise ExecutionLimited("Error, the function {} can only be executed {} times.".format(function.__name__,limit))
+
+        def decorated(*args, **kwargs):
+            if func in fonction_executed:
+                if fonction_executed[func] >= limit:
+                    if overrun_func is not None:
+                        overrun_func(*overrun_args, **overrun_kwargs)
+                    else
+                        raise ExecutionLimited(
+                            f"Error, the function {func.__name__} "
+                            f"can only be executed {limit} times.")
+                else:
+                    fonction_executed[func] += 1
             else:
-                fonction_executed[function] = 1
-            return function(*args,**kwargs)
-        return decorated_function
+                fonction_executed[func] = 1
+            return func(*args, **kwargs)
+
+        return decorated
+
     return decorator
 
-def speed_reducer(secs):
+def speed_reducer(seconds):
     """Apply a sleeper 'time.sleep(secs)' before the execution of the function."""
     import time
-    def decorator(function):
-        def decorated_function(*args,**kwargs):
-            time.sleep(secs)
-            return function(*args,**kwargs)
-        return decorated_function
+
+    def decorator(func):
+
+        def decorated(*args, **kwargs):
+            time.sleep(seconds)
+            return func(*args, **kwargs)
+
+        return decorated
+
     return decorator
 
-def limited_frequency_execution(secs):
-    """Limits the execution of the function to once every 'secs' seconds.
-    Calculates from the end of the last run to the beginning of the next one."""
+def limited_frequency_execution(seconds):
+    """Limits the execution of the function to once every 'seconds' seconds.
+    Calculates from the end of the last run to the beginning of the next one.
+    If this duration is too short the func decorated return None."""
     import time
-    def decorator(function):
+
+    def decorator(func):
         last_used = float('-inf')
-        def decorated_function(*args,**kwargs):
+
+        def decorated(*args, **kwargs):
             nonlocal last_used
+            output = None
             now = time.time()
-            if now - last_used >= secs:
-                result = function(*args,**kwargs)
+            if (now - last_used) >= seconds:
+                output = func(*args, **kwargs)
                 last_used = time.time()
-                return result
-        return decorated_function
+            return output
+
+        return decorated
+
     return decorator
 
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.9
+
 """
 ###############################################################################
 #
@@ -27,35 +29,37 @@
 #   13.  suite_Robinson  ........................................... ligne  160
 #
 ###############################################################################
-# --coding:utf-8--
 """
-from copy import copy, deepcopy
-from math import sqrt
+
 import math
+from typing import Union
+from math import sqrt
+from copy import copy, deepcopy
 
-# import cmath
 
 
-def facto(n):
-    """renvoie la factorielle de n"""
+def facto(n: int) -> int:
+    """Returns the factorial of n."""
+    if n < 0:
+        raise ArithmeticError("Can't calculate the factorial of a negative integer.")
     facto = 1
     for k in range(1, n + 1):
         facto *= k
     return facto
 
 
-def coefBino(k, n):
-    """renvoie le coefficient binomiale: k parmi n"""
+def coefBino(k: int, n: int) -> int:
+    """Returns the binomial coefficient: k among n."""
     return facto(n) // (facto(k) * facto(n - k))
 
 
-def arrangement(k, n):
-    """renvoie le nombre de k arrangement parmi n """
+def arrangement(k: int, n: int) -> int:
+    """Returns the number of k arrangements among n."""
     return facto(n) // facto(n - k)
 
 
-def isSquare(x):
-    """renvoie un bouléen pour savoir si x est un carré """
+def isSquare(x: int) -> bool:
+    """Verify is x is a square."""
     bool = True
     if type(x) is float:
         raise ValueError
@@ -67,11 +71,11 @@ def isSquare(x):
     return bool
 
 
-def facteurFermat(N):
-    """calcul deux facteurs (A,B) du nombre IMPAIR N tel que N=A*B
-    et A et B ne sont pas les facteurs triviaux
-    Si N est paire lève l'exception: ValueError
-
+def facteurFermat(N: int) -> tuple[int, int]:
+    """Calculate the 2 factors of Fermat.
+    Calculating two factors (A,B) of the number N (odd) such that N=A*B
+    and A and B are not the trivial factors.
+    If N is even, the exception is raised: ValueError.
     """
     if N % 2 == 0:
         raise ValueError
@@ -86,31 +90,37 @@ def facteurFermat(N):
     return (A - int(sqrt(Bsq)), A + int(sqrt(Bsq)))
 
 
-def prod(list):
+def prod(list: list):
+    """Return the product of the items in the list."""
     result = 1
     for x in list:
         result *= x
     return result
 
 
-def permutations(liste):
-    """Prend en argument une _liste (pas de tuple)
-    renvoie la _liste des permutation de la _liste
-    mais attention la taille de la _liste renvoyer
-    est en !n ->factorielle "le nombre l'élément" """
-    if len(liste) == 2:
-        return [(liste[0], liste[1]), (liste[1], liste[0])]
+def permutations(list_) -> list[tuple]:
+    """Returns the list of permutations of list_.
+    Be aware of the size of the list_ to be sent back
+    is in !n -> factorial "the number the element of list_".
+    """
+    list_ = list(list_)
+    if len(list_) == 2:
+        return [(list_[0], list_[1]), (list_[1], list_[0])]
     else:
         result = []
-        for i in range(len(liste)):
-            b = liste[:]
+        for i in range(len(list_)):
+            b = list_[:]
             del b[i]
-            result += [tuple([liste[i]]) + a for a in permutations(b)]
+            result += [tuple([list_[i]]) + a for a in permutations(b)]
         return result
 
 
-def signature(permu):
-    """La permutation est une liste des premiers entiers, mélanger dans un certain ordre"""
+def signature(permu: list[tuple]) -> int:
+    """Return the signature of the permutation.
+    A permutation is said to be even if it has an even number of inversions,
+    otherwise it is odd. 
+    The signature of a permutation is 1 if it is even, -1 if it is odd.
+    """
     return int(
         prod(
             [
@@ -121,8 +131,8 @@ def signature(permu):
     )
 
 
-def sgn(x):
-    """Fonction signe"""
+def sgn(x: Union[int, float]) -> int:
+    """Sign function."""
     if x < 0:
         return -1
     elif x > 0:
@@ -131,9 +141,10 @@ def sgn(x):
         return 0
 
 
-def intVersList(nbr):
-    """découpe le nombre en chiffre dans une liste
-    exemple: 123 deviendra [1,2,3]"""
+def intVersList(nbr: int) -> list[int]:
+    """Cuts out the number in digits from a list.
+    example: 123 will become [1,2,3].
+    """
     return [int(list(str(nbr))[i + 1]) for i in range(len(list(str(nbr))) - 2)]
 
 
@@ -155,9 +166,9 @@ données: un ensemble E
 """
 
 
-def generator_syracuse(n):
-    """type générateur
-    génère la suite de syracuse de n jusqu'à atteindre 1"""
+def generator_syracuse(n: int):
+    """Generator of Synracuse.
+    Generates the syracuse sequence from n up to 1"""
     yield n
     while n != 1:
         if n % 2 == 0:
@@ -167,18 +178,21 @@ def generator_syracuse(n):
         yield n
 
 
-def compte_apparition(nombre):
-    """retourne un dictionnaire qui en clé sont les carractère
-    et en valeurs le nombre de fois qu'il apparaissent"""
-    liste = intVersList(nombre)
+def compte_apparition(number: int) -> dict:
+    """Returns a dictionary which in key are the carracteries
+    and in values the number of times it appears.
+    """
+    liste = intVersList(number)
     occurence = {}.fromkeys(set(liste), 0)
     for valeur in liste:
         occurence[valeur] += 1
     return occurence
 
 
-def suite_Robinson(n):
-    """renvoie la liste des premiers termes de la suite de robinson pour U(0)=0 jusqu'à U(n)"""
+def suite_Robinson(n: int) -> list:
+    """Returns the list of the first terms of the robinson sequence. 
+    U(0)=0 to U(n)
+    """
     resultat = [0]
     while len(resultat) <= n:
         liste_chiffre = transfo(resultat[-1])
