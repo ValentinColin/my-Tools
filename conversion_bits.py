@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.9
+
 """ Logical AND (&):
 bit-by-bit comparison using logical AND
 Example:
