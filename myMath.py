@@ -71,7 +71,7 @@ def isSquare(x: int) -> bool:
     return bool
 
 
-def facteurFermat(N: int) -> tuple[int, int]:
+def facteurFermat(N: int) -> tuple:
     """Calculate the 2 factors of Fermat.
     Calculating two factors (A,B) of the number N (odd) such that N=A*B
     and A and B are not the trivial factors.
@@ -98,7 +98,7 @@ def prod(list: list):
     return result
 
 
-def permutations(list_) -> list[tuple]:
+def permutations(list_: list) -> list:
     """Returns the list of permutations of list_.
     Be aware of the size of the list_ to be sent back
     is in !n -> factorial "the number the element of list_".
@@ -115,7 +115,7 @@ def permutations(list_) -> list[tuple]:
         return result
 
 
-def signature(permu: list[tuple]) -> int:
+def signature(permu: list) -> int:
     """Return the signature of the permutation.
     A permutation is said to be even if it has an even number of inversions,
     otherwise it is odd. 
@@ -141,7 +141,7 @@ def sgn(x: Union[int, float]) -> int:
         return 0
 
 
-def intVersList(nbr: int) -> list[int]:
+def intVersList(nbr: int) -> list:
     """Cuts out the number in digits from a list.
     example: 123 will become [1,2,3].
     """
@@ -199,3 +199,15 @@ def suite_Robinson(n: int) -> list:
         dict_occu = compte_apparition(liste_chiffre)
         ############ je me suis arrété là il faut écrire le terme suivant maintenant que j'ai les occurance
         liste_chiffre_suivante = []
+
+def heron(number, start=1, epsilon=10 ** -20, display=False) -> float:
+    """Extract approximatively the square of number."""
+    x = start
+    f = lambda u: (u + number / u) / 2
+    y = f(x)
+
+    while abs(x - y) > epsilon:
+        if display:
+            print(y)
+        x, y = y, f(y)
+    return y
