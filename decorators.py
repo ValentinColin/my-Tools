@@ -54,6 +54,62 @@ def debug(func):
 
     return decorated
 
+
+def print_step_SF(msg: str, success_msg: str = "Success", error_msg: str = "Failed", error_case = Exception):
+    """Affiche un log début/fin.
+    msg:         message de base
+    msg_success: fin du message en cas d'exécution sans erreur
+    msg_error:   fin du message en cas d'erreur lors de l'exécution
+    error_case:  cas d'echec (class héritant de Exception)
+    
+    note: Si la fonction wrapper doit print des infos, 
+          il est préférable que le premier caractère soit un saut de ligne: \n
+          pour des raison esthétique
+    """
+
+    def decorator(func):
+ 
+        def decorated(*args, **kwargs):
+            print(msg, end='', flush=True)
+            output = None
+            try:
+                output = func(*args, **kwargs)
+            except error_case:
+                print("\r\033[K" + msg, "-", error_msg)
+            else:
+                print("\r\033[K" + msg, "-", success_msg)
+            return output
+
+        return decorated
+
+    return decorator
+
+
+def print_step_done(msg: str, msg_end: str = "done"):
+    """Affiche un log début/fin.
+    :msg:     string afficher AVANT ET APRÈS l'exécution de la fonction
+    :msg_end: string ajouter à :msg: APRÈS l'exécution de la fonction
+    
+    exemple:
+        msg     = "Creation of the target folder"
+        msg_end = "done"
+        >>> Creation of the target folder
+        >>> # exécution de la fonction
+        >>> Creation of the target folder - done
+    """
+
+    def decorator(func):
+ 
+        def decorated(*args, **kwargs):
+            print(msg)
+            output = func(*args, **kwargs)
+            print(msg, "-", end_msg)
+            return output
+
+        return decorated
+
+    return decorator
+
 def execution_time(func):
     """Measures the performance of the function.
     Decorator returning the time in seconds
