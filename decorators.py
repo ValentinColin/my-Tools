@@ -179,7 +179,7 @@ def speed_reducer(seconds):
 
     return decorator
 
-def limited_frequency_execution(seconds):
+def limited_frequency_execution(seconds, output = None):
     """Limits the execution of the function to once every 'seconds' seconds.
     Calculates from the end of the last run to the beginning of the next one.
     If this duration is too short the func decorated return None."""
@@ -190,7 +190,6 @@ def limited_frequency_execution(seconds):
 
         def decorated(*args, **kwargs):
             nonlocal last_used
-            output = None
             now = time.time()
             if (now - last_used) >= seconds:
                 output = func(*args, **kwargs)
