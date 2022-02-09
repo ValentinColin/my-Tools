@@ -33,12 +33,15 @@ Called example function
 Without the use of wraps(), the name of the example function would have been 'new_fct',
 and the documentation string of the original example() function would have been lost.
 """
+import functools
 
 
 def debug(func):
     """Decorator for debugging.
-    Displays inputs and output in the terminal."""
+    Displays inputs and output in the terminal.
+    """
 
+    @functools.wraps(func)
     def decorated(*args, **kwargs):
         if args and not kwargs:
             print("~ input of {}: args: {}".format(func.__name__, args))
@@ -69,6 +72,7 @@ def print_step_SF(msg: str, success_msg: str = "Success", error_msg: str = "Fail
 
     def decorator(func):
  
+        @functools.wraps(func)
         def decorated(*args, **kwargs):
             print(msg, end='', flush=True)
             output = None
@@ -100,6 +104,7 @@ def print_step_done(msg: str, msg_end: str = "done"):
 
     def decorator(func):
  
+        @functools.wraps(func)
         def decorated(*args, **kwargs):
             print(msg)
             output = func(*args, **kwargs)
@@ -113,9 +118,11 @@ def print_step_done(msg: str, msg_end: str = "done"):
 def execution_time(func):
     """Measures the performance of the function.
     Decorator returning the time in seconds
-    it takes for a function to execute."""
+    it takes for a function to execute.
+    """
     import time
 
+    @functools.wraps(func)
     def decorated(*args, **kwargs):
         start = time.time()
         output = func(*args, **kwargs)
@@ -146,12 +153,13 @@ def execution_limited(limit, overrun_func = None, *overrun_args, **overrun_kwarg
     def decorator(func):
         fonction_executed = {}
 
+        @functools.wraps(func)
         def decorated(*args, **kwargs):
             if func in fonction_executed:
                 if fonction_executed[func] >= limit:
                     if overrun_func is not None:
                         overrun_func(*overrun_args, **overrun_kwargs)
-                    else
+                    else:
                         raise ExecutionLimited(
                             f"Error, the function {func.__name__} "
                             f"can only be executed {limit} times.")
@@ -171,6 +179,7 @@ def speed_reducer(seconds):
 
     def decorator(func):
 
+        @functools.wraps(func)
         def decorated(*args, **kwargs):
             time.sleep(seconds)
             return func(*args, **kwargs)
@@ -188,6 +197,7 @@ def limited_frequency_execution(seconds):
     def decorator(func):
         last_used = float('-inf')
 
+        @functools.wraps(func)
         def decorated(*args, **kwargs):
             nonlocal last_used
             output = None
@@ -208,6 +218,7 @@ if __name__ == '__main__':
 
     @limited_frequency_execution(4) # forbid the function from being executed more than once every 4 seconds
     def foo(arg1,arg2,arg3):
+        """foo docstring"""
         time.sleep(2)
         return "result..."
 
@@ -215,3 +226,4 @@ if __name__ == '__main__':
     for _ in range(10):
         time.sleep(1)
         print(foo("param1","param2","param3")," ~$~ time : {:.{prec}f}".format(time.time()-start,prec=2),"secondes")
+        print(foo.__name__, ",", foo.__doc__)
